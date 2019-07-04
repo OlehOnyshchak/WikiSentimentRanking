@@ -3,3 +3,4 @@ __pycache__/
 \apicache-py3/
 *\.lwp
 *\.ctrl
+**/*.DS_Store
