@@ -43,11 +43,10 @@ def query(request, batch_size=100, limit=1000, is_category=False, debug_info=Tru
                                  namespaces=[0])) # type of entities to query, 0 = page
     
     count = 0
-    pages_key = 'pages'
-    data = { pages_key: [] }
+    data = []
     for p in pages:
         count += 1
-        data[pages_key].append({
+        data.append({
             'title': p.title(),
             'url': p.full_url(),
             'text': _clean(p.text),
@@ -55,10 +54,10 @@ def query(request, batch_size=100, limit=1000, is_category=False, debug_info=Tru
         
         if count % batch_size == 0:
             _dump(requests_path / (str(count) + '.json'), data)
-            data = { pages_key: [] }
+            data = []
             if debug_info: print('Dumped {} pages'.format(count))
             
-    if len(data[pages_key]):
+    if len(data):
         _dump(requests_path / (str(count) + '.json'), data)
         if debug_info: print('Dumped {} pages'.format(count))
             
