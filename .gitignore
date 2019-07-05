@@ -4,3 +4,5 @@ __pycache__/
 *\.lwp
 *\.ctrl
 **/*.DS_Store
+
+ml/train/training.1600000.processed.noemoticon.csv
