@@ -10,7 +10,7 @@ def _clean(wiki_text):
 
 def _dump(path, data):
     with open(path, 'w', encoding='utf8') as outfile:  
-        outfile.write('\n'.join(data))
+        outfile.write("\n".join(data))
 #         json.dump(data, outfile, indent=2, ensure_ascii=False)
         
 def query_size(request):
@@ -53,10 +53,10 @@ def query(request, batch_size=100, limit=1000, is_category=False, preload_conten
     data = []
     for p in pages:
         count += 1
-        data.append(str({
-            'title': p.title(),
-            'url': p.full_url(),
-            'text': _clean(p.text),
+        data.append(json.dumps({
+            "title": p.title(),
+            "url": p.full_url(),
+            "text": _clean(p.text),
         }))
         
         if count % batch_size == 0:
