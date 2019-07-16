@@ -29,12 +29,18 @@ def get_requests_path(request):
       
     return (requests_path, is_exist)
 
-def query(request, batch_size=100, limit=1000, is_category=False, preload_content=True, debug_info=True):
+def query(request, batch_size=100, limit=1000, is_category=False,
+          preload_content=True, force_rewrite=True, debug_info=True):
     requests_path, existed = get_requests_path(request)
     
     if existed:
-        if debug_info: print('Request has already been downloaded')
-        return requests_path
+        if not force_rewrite:
+            if debug_info: print('Request has already been downloaded')
+            return requests_path
+        else:
+            if debug_info: print('Cleaning old data')
+            for x in requests_path.iterdir():
+                x.unlink()
     
     site = pywikibot.Site()    
     if is_category:
