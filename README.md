@@ -9,5 +9,5 @@ $ docker build -t wiki_sentiment_ranking .
 Run container
 
 `
-$ docker run -it --rm -u root -p 8888:8888 wiki_sentiment_ranking
+$ docker run -it --rm -p 8888:8888 wiki_sentiment_ranking
 `
