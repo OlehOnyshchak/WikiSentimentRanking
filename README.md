@@ -3,7 +3,7 @@
 Build image
 
 `
-$ docker build -t WikiSentimentRanking .
+$ docker build -t wiki_sentiment_ranking .
 `
 
 Run container
