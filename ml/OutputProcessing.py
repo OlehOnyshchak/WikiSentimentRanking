@@ -15,7 +15,7 @@ import pandas as pd
 from os import listdir
 from os.path import isfile, join
 
-df = pd.DataFrame(columns=['name','neg', 'neu', 'pos', 'compound'])
+df = pd.DataFrame(columns=['title','url', 'sentiment'])
 
 def insertDataFromJSON(filepath):
     global df
@@ -24,11 +24,9 @@ def insertDataFromJSON(filepath):
         json_data = json.load(json_file)
 
         df = df.append({
-            'name': json_data['name'], 
-            'neg': json_data['emotions']['neg'],
-            'neu': json_data['emotions']['neu'],
-            'pos': json_data['emotions']['pos'],
-            'compound': json_data['emotions']['compound']
+            'title': json_data['title'], 
+            'url': json_data['url'],
+            'sentiment': json_data['sentiment']
         }, ignore_index=True)
         
 
@@ -42,9 +40,9 @@ def on_file_created(filepath):
     
     insertDataFromJSON(filepath)
     
-    df = df.sort_values(by=['compound'], ascending=False).reset_index(drop=True)
+    df = df.sort_values(by=['sentiment'], ascending=False).reset_index(drop=True)
 
-    mean_text = 'Mean: {}'.format(round(df["compound"].mean(),3))
+    mean_text = 'Mean: {}'.format(round(df["sentiment"].mean(),3))
     display(mean_text)
     display(df)
 
@@ -88,8 +86,8 @@ def process_output_files(path, files_count):
         pb.value += 1
         pb.description = 'Iter {}/{}'.format(pb.value, files_count)
 
-    df = df.sort_values(by=['compound'], ascending=False).reset_index(drop=True)
-    mean_text = 'Mean: {}'.format(round(df["compound"].mean(),3))
+    df = df.sort_values(by=['sentiment'], ascending=False).reset_index(drop=True)
+    mean_text = 'Mean: {}'.format(round(df["sentiment"].mean(),3))
 
     display(mean_text)
     display(df)
