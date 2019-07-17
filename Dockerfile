@@ -4,4 +4,4 @@ USER root
 
 COPY . /home/jovyan/work
 
-RUN /bin/bash -c 'chmod -R 777  /home/jovyan/'
+RUN /bin/bash -c 'chown -R jovyan:users /home/jovyan/'
