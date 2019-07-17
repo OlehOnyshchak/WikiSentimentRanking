@@ -19,8 +19,8 @@ def query_size(request):
     
     return len(pages)
 
-def get_requests_path(request):
-    requests_base = Path('../requests')
+def get_requests_path(request, out_dir):
+    requests_base = Path(out_dir)
     requests_path = requests_base / request
     
     is_exist = requests_path.exists()
@@ -29,9 +29,9 @@ def get_requests_path(request):
       
     return (requests_path, is_exist)
 
-def query(request, batch_size=100, limit=1000, is_category=False,
+def query(request, out_dir='../requests', batch_size=100, limit=1000, is_category=False,
           preload_content=True, force_rewrite=True, debug_info=True):
-    requests_path, existed = get_requests_path(request)
+    requests_path, existed = get_requests_path(request, out_dir)
     
     if existed:
         if not force_rewrite:
@@ -42,6 +42,7 @@ def query(request, batch_size=100, limit=1000, is_category=False,
             for x in requests_path.iterdir():
                 x.unlink()
     
+    print('Downloading...')
     site = pywikibot.Site()    
     if is_category:
         category = pywikibot.Category(site, request)
