@@ -18,7 +18,8 @@ class SparkSentimentStreamer(object):
         if not rdd.isEmpty():
             df = self.spark.read.json(rdd, multiLine=True)
             df.show(5)
-            func_udf = udf(process_func, DoubleType())
+            stub_func = lambda X: 1.0
+            func_udf = udf(stub_func, DoubleType())
             df_processed = df.select("title", "url", func_udf(df.text).alias("sentiment"))
             df_processed.show(5)
             rows = df_processed.count()
