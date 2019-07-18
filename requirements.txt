@@ -2,3 +2,5 @@ pywikibot
 mwparserfromhell
 watchdog
 spark-nlp
+nltk
+numpy

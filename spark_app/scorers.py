@@ -1,3 +1,5 @@
+# from tools import  secure_import
+
 # method may be 'vader', 'lr' or 'lr-advanced', spark is SparkSesision
 def score_text(text, method='vader', pipelineModel=None, lrModel=None, spark=None):
     if pipelineModel is not None and lrModel is not None and spark is not None:
