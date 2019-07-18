@@ -1,0 +1,4 @@
+pywikibot
+mwparserfromhell
+watchdog
+spark-nlp
