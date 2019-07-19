@@ -23,10 +23,11 @@ You can run the Shell script `./start_env.sh` or configure Docker manually:
 ```
 $ docker pull jupyter/pyspark-notebook
 $ docker build -t wiki_sentiment_ranking .
+$ docker run -it --rm -p 8888:8888 wiki_sentiment_ranking
 ```
 
-Run container
+### Evaluation
 
-`
-$ docker run -it --rm -p 8888:8888 wiki_sentiment_ranking
-`
+The two algorithms were evaluated in the next notebooks:
+- [Advanced_LR_Evaluation.ipynb](https://github.com/OlehOnyshchak/WikiSentimentRanking/blob/master/evaluation/Advanced_LR_Evaluation.ipynb)
+- [VADER_Evaluation.ipynb](https://github.com/OlehOnyshchak/WikiSentimentRanking/blob/master/evaluation/VADER_Evaluation.ipynb)
