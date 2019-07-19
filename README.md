@@ -26,7 +26,7 @@ $ docker build -t wiki_sentiment_ranking .
 $ docker run -it --rm -p 8888:8888 wiki_sentiment_ranking
 ```
 
-### Evaluation
+## Evaluation
 
 The two algorithms were evaluated in the next notebooks:
 - [Advanced_LR_Evaluation.ipynb](https://github.com/OlehOnyshchak/WikiSentimentRanking/blob/master/evaluation/Advanced_LR_Evaluation.ipynb)
