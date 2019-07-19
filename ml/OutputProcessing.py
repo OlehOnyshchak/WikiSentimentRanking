@@ -34,8 +34,10 @@ def insertDataFromJSON(filepath):
 def on_file_created(filepath):
     global df
     
+    if "_temporary" in filepath:
+        return
+    
     if(not filepath.endswith(".json")):
-        print(df)
         return
     
     insertDataFromJSON(filepath)
