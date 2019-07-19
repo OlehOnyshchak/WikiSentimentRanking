@@ -34,12 +34,6 @@ def insertDataFromJSON(filepath):
 def on_file_created(filepath):
     global df
     
-    if "_temporary" in filepath:
-        return
-    
-    if(not filepath.endswith(".json")):
-        return
-    
     insertDataFromJSON(filepath)
     
     df = df.sort_values(by=['sentiment'], ascending=False).reset_index(drop=True)
@@ -51,12 +45,21 @@ def on_file_created(filepath):
 def observe(path, files_count, pb):
 
     class EventHandler(FileSystemEventHandler):
-        def on_created(self, event):
+        
+        def on_moved(self, event):
+            
+            filepath = event.dest_path
+            
+            if "_temporary" in filepath:
+                return
+            if(not filepath.endswith(".json")):
+                return
+            
             pb.value += 1
             pb.description = 'Iter {}/{}'.format(pb.value, files_count)
             clear_output(wait=True)
             display(pb)
-            on_file_created(event.src_path)
+            on_file_created(filepath)
 
     event_handler = EventHandler()
     observer = Observer()
@@ -72,11 +75,11 @@ def observe(path, files_count, pb):
 def process_output_files(path, files_count):
     global df
     
+    df = pd.DataFrame(columns=['title','url', 'sentiment'])
+    
     pb = IntProgress(description='Iter 0/{}'.format(files_count), min=0, max=files_count)
     display(pb)
-    
-    df.drop(df.index, inplace=True)
-
+   
     ### read existing files
     for filename in [f for f in listdir(path) if isfile(join(path, f))]:
 
