@@ -13,9 +13,9 @@ def _dump(path, data):
         outfile.write("\n".join(data))
 #         json.dump(data, outfile, indent=2, ensure_ascii=False)
         
-def query_size(request):
+def query_size(request, limit):
     site = pywikibot.Site()
-    pages = list(site.search(request, namespaces=[0]))
+    pages = list(site.search(request, namespaces=[0], total=limit))
     
     return len(pages)
 
