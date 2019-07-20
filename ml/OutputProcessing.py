@@ -15,10 +15,42 @@ import pandas as pd
 from os import listdir
 from os.path import isfile, join
 
+pb = IntProgress(min=0, max=0) # to be created later
 df = pd.DataFrame(columns=['title','url', 'sentiment'])
 
+new_data_arrived = False
+log_last_updated_millis = 0
+log_update_interval_millis = 3000
+
+def updateLogIfNeeded():
+    
+    global log_last_updated_millis
+    global log_update_interval_millis
+    global new_data_arrived
+    global pd
+    global df
+    
+    millis = int(round(time.time() * 1000))
+    
+    if not new_data_arrived:
+        return
+    
+    if millis - log_last_updated_millis < log_update_interval_millis:
+        return
+    
+    new_data_arrived = False
+    log_last_updated_millis = millis
+    
+    clear_output(wait=True)
+    display(pb)
+    
+    mean_text = 'Mean: {}'.format(round(df["sentiment"].mean(),3))
+    display(mean_text)
+    display(df)
+    
 def insertDataFromJSON(filepath):
     global df
+    global new_data_arrived
     
     with open(filepath) as json_file:
         json_data = json.load(json_file)
@@ -29,18 +61,17 @@ def insertDataFromJSON(filepath):
             'sentiment': json_data['sentiment']
         }, ignore_index=True)
         
-
-### observe new files
+        new_data_arrived = True
+        
 def on_file_created(filepath):
     global df
+    global new_data_arrived
     
     insertDataFromJSON(filepath)
     
     df = df.sort_values(by=['sentiment'], ascending=False).reset_index(drop=True)
-
-    mean_text = 'Mean: {}'.format(round(df["sentiment"].mean(),3))
-    display(mean_text)
-    display(df)
+    
+    new_data_arrived = True
 
 def observe(path, files_count, pb):
 
@@ -56,51 +87,36 @@ def observe(path, files_count, pb):
                 return
             
             pb.value += 1
-            pb.description = 'Iter {}/{}'.format(pb.value, files_count)
-            clear_output(wait=True)
-            display(pb)
+            pb.description = 'Iter {}/{}'.format(pb.value, pb.max)
+            
             on_file_created(filepath)
-
-    event_handler = EventHandler()
+    
     observer = Observer()
-    observer.schedule(event_handler, path, recursive=True)
+    observer.schedule(EventHandler(), path, recursive=True)
     observer.start()
+    
     try:
         while True:
             time.sleep(1)
             
+            updateLogIfNeeded()
+            
             if pb.value >= pb.max:
                 observer.stop()
                 return
+            
     except KeyboardInterrupt:
         observer.stop()
+        
     observer.join()
     
 def process_output_files(path, files_count):
     global df
+    global pb
     
     df = pd.DataFrame(columns=['title','url', 'sentiment'])
-    
+
     pb = IntProgress(description='Iter 0/{}'.format(files_count), min=0, max=files_count)
     display(pb)
-   
-    ### read existing files - upd: not sure if we need it anymore
-#     for filename in [f for f in listdir(path) if isfile(join(path, f))]:
-
-#         if(not filename.endswith(".json")):
-#             continue
-
-#         insertDataFromJSON(join(path, filename))
-        
-#         pb.value += 1
-#         pb.description = 'Iter {}/{}'.format(pb.value, files_count)
-
-#     df = df.sort_values(by=['sentiment'], ascending=False).reset_index(drop=True)
-#     mean_text = 'Mean: {}'.format(round(df["sentiment"].mean(),3))
-
-#     display(mean_text)
-#     display(df)
-
-    ### observe
 
     observe(path, files_count, pb)
