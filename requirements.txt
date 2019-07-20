@@ -4,3 +4,6 @@ watchdog
 spark-nlp
 nltk
 numpy
+findspark
+sklearn
+shap
