@@ -52,26 +52,38 @@ def insertDataFromJSON(filepath):
     global df
     global new_data_arrived
     
-    with open(filepath) as json_file:
-        json_data = json.load(json_file)
-
-        df = df.append({
-            'title': json_data['title'], 
-            'url': json_data['url'],
-            'sentiment': json_data['sentiment']
-        }, ignore_index=True)
+    with open(filepath, 'r') as json_file:
+        inserted = 0
         
-        new_data_arrived = True
+        for json_row in json_file.read().split('\n'):
+            
+            if len(json_row) == 0:
+                continue
+           
+            json_data = json.loads(str(json_row))
+
+            df = df.append({
+                'title': json_data['title'], 
+                'url': json_data['url'],
+                'sentiment': json_data['sentiment']
+            }, ignore_index=True)
+            
+            inserted = inserted + 1
+            new_data_arrived = True
+        
+        return inserted
         
 def on_file_created(filepath):
     global df
     global new_data_arrived
     
-    insertDataFromJSON(filepath)
+    rows_inserted = insertDataFromJSON(filepath)
     
     df = df.sort_values(by=['sentiment'], ascending=False).reset_index(drop=True)
     
     new_data_arrived = True
+    
+    return rows_inserted
 
 def observe(path, files_count, pb):
 
@@ -86,10 +98,10 @@ def observe(path, files_count, pb):
             if(not filepath.endswith(".json")):
                 return
             
-            pb.value += 1
-            pb.description = 'Iter {}/{}'.format(pb.value, pb.max)
+            rows_inserted = on_file_created(filepath)
             
-            on_file_created(filepath)
+            pb.value += rows_inserted
+            pb.description = 'Iter {}/{}'.format(pb.value, pb.max)
     
     observer = Observer()
     observer.schedule(EventHandler(), path, recursive=True)
