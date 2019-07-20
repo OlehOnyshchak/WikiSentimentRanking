@@ -68,6 +68,10 @@ def observe(path, files_count, pb):
     try:
         while True:
             time.sleep(1)
+            
+            if pb.value >= pb.max:
+                observer.stop()
+                return
     except KeyboardInterrupt:
         observer.stop()
     observer.join()
@@ -80,22 +84,22 @@ def process_output_files(path, files_count):
     pb = IntProgress(description='Iter 0/{}'.format(files_count), min=0, max=files_count)
     display(pb)
    
-    ### read existing files
-    for filename in [f for f in listdir(path) if isfile(join(path, f))]:
+    ### read existing files - upd: not sure if we need it anymore
+#     for filename in [f for f in listdir(path) if isfile(join(path, f))]:
 
-        if(not filename.endswith(".json")):
-            continue
+#         if(not filename.endswith(".json")):
+#             continue
 
-        insertDataFromJSON(join(path, filename))
+#         insertDataFromJSON(join(path, filename))
         
-        pb.value += 1
-        pb.description = 'Iter {}/{}'.format(pb.value, files_count)
+#         pb.value += 1
+#         pb.description = 'Iter {}/{}'.format(pb.value, files_count)
 
-    df = df.sort_values(by=['sentiment'], ascending=False).reset_index(drop=True)
-    mean_text = 'Mean: {}'.format(round(df["sentiment"].mean(),3))
+#     df = df.sort_values(by=['sentiment'], ascending=False).reset_index(drop=True)
+#     mean_text = 'Mean: {}'.format(round(df["sentiment"].mean(),3))
 
-    display(mean_text)
-    display(df)
+#     display(mean_text)
+#     display(df)
 
     ### observe
 
