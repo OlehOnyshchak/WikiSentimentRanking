@@ -89,6 +89,20 @@ def observe(path, files_count, pb):
 
     class EventHandler(FileSystemEventHandler):
         
+        def on_created(self, event):
+            
+            filepath = event.src_path
+            
+            if "_temporary" in filepath:
+                return
+            if(not filepath.endswith(".json")):
+                return
+            
+            rows_inserted = on_file_created(filepath)
+            
+            pb.value += rows_inserted
+            pb.description = 'Iter {}/{}'.format(pb.value, pb.max)
+        
         def on_moved(self, event):
             
             filepath = event.dest_path
