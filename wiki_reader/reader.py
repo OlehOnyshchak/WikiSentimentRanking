@@ -42,7 +42,8 @@ def query(request, out_dir='../requests', batch_size=100, limit=1000, is_categor
             for x in requests_path.iterdir():
                 x.unlink()
     
-    if debug_info: print('Downloading...')
+#     if debug_info: 
+    print('Downloading...')
     site = pywikibot.Site()    
     if is_category:
         category = pywikibot.Category(site, request)
